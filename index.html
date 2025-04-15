@@ -1,120 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Space Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alessio - Space Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Orbitron', sans-serif;
     }
 
     body {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #e0e6ed;
-      line-height: 1.6;
-      background-attachment: fixed;
+      background: url('https://images.unsplash.com/photo-1447433819943-74a20887a5a0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #ffffff;
     }
 
     header {
-      background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #0f2027);
-      background-size: 400% 400%;
-      color: #fff;
-      padding: 2.5rem 2rem;
+      background: rgba(0, 0, 0, 0.7);
       text-align: center;
-      animation: gradientShift 10s ease infinite, fadeIn 1s ease-out forwards;
+      padding: 3rem 1rem;
       border-bottom: 3px solid #00c3ff;
+      animation: fadeIn 2s ease-out;
     }
 
     header h1 {
-      font-size: 2.7rem;
-      margin-bottom: 0.5rem;
+      font-size: 3rem;
+      color: #00c3ff;
     }
 
     header p {
       font-size: 1.2rem;
-      color: #c0d3df;
+      color: #dddddd;
     }
 
     .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      animation: slideUp 1s ease-out forwards;
+      max-width: 1000px;
+      margin: 3rem auto;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 195, 255, 0.4);
+      animation: slideUp 1.5s ease-out;
     }
 
     .project {
-      background: rgba(255, 255, 255, 0.05);
+      margin-bottom: 2rem;
       padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+      border: 1px solid #00c3ff;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
       transition: transform 0.3s ease, background 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .project:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.08);
+      transform: scale(1.02);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .project h2 {
       font-size: 1.6rem;
-      margin-bottom: 0.5rem;
       color: #7ed6df;
     }
 
+    .project a {
+      color: #00c3ff;
+      text-decoration: none;
+    }
+
+    .project a:hover {
+      text-decoration: underline;
+    }
+
     .project p {
-      color: #dff9fb;
+      color: #dddddd;
     }
 
     footer {
       text-align: center;
       padding: 2rem;
       font-size: 0.9rem;
-      color: #95a5a6;
+      color: #888;
+      background: rgba(0, 0, 0, 0.7);
+      margin-top: 3rem;
     }
 
     @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(-20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes slideUp {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Ciao, sono Alessio</h1>
-    <p>Benvenuto nel mio portfolio spaziale. Esplora le mie missioni e progetti intergalattici.</p>
+    <p>Benvenuto nel mio spazio portfolio: missioni, codice e avventure oltre l'atmosfera.</p>
   </header>
 
   <div class="container">
     <div class="project">
-      <h2><a href="progetto1.html">Progetto 1</a></h2>
-      <p>Descrizione breve del progetto. Puoi personalizzarla con dettagli come tecnologie usate, obiettivi, o link al repo.</p>
+      <h2><a href="progetto1.html">🚀 Progetto 1 - Missione Alpha</a></h2>
+      <p>Un progetto spaziale che esplora nuove frontiere dell'esperienza utente con tecnologie moderne.</p>
     </div>
     <div class="project">
-      <h2><a href="progetto2.html">Progetto 2</a></h2>
-      <p>Un altro progetto. Può essere qualsiasi cosa tu voglia mostrare: un'app, un sito web, un esperimento, ecc.</p>
+      <h2><a href="progetto2.html">🛰️ Progetto 2 - Orbita Web</a></h2>
+      <p>Un'applicazione web pensata per il controllo missioni e la visualizzazione in tempo reale dei dati orbitanti.</p>
     </div>
   </div>
 
   <footer>
-    © 2025 Alessio. In orbita con creatività.
+    © 2025 Alessio | Verso l'infinito e oltre 🌌
   </footer>
 </body>
 </html>
