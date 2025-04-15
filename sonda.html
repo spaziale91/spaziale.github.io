@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missione Alpha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at center, #0d1b2a, #1b263b);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+      padding: 2rem;
+      text-align: center;
+      color: #aee6f9;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 2rem;
+    }
+
+    .panel {
+      background: #112240;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    .panel h2 {
+      color: #90e0ef;
+      margin-bottom: 1rem;
+    }
+
+    .status {
+      font-size: 1.2rem;
+      color: #ffd166;
+    }
+
+    #startBtn {
+      background-color: #00b4d8;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 25px;
+      font-size: 1rem;
+      margin: 2rem auto;
+      display: block;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #startBtn:hover {
+      background-color: #0077b6;
+    }
+
+    #sceneContainer {
+      width: 100%;
+      height: 400px;
+      display: block;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Missione Alpha - Centro di Controllo</h1>
+    <p>Simulazione di monitoraggio per una missione spaziale immaginaria.</p>
+  </header>
+
+  <div class="dashboard">
+    <div class="panel">
+      <h2>Stato Navetta</h2>
+      <p class="status" id="status">Pronto per il lancio</p>
+    </div>
+    <div class="panel">
+      <h2>Posizione</h2>
+      <p class="status" id="position">Terra</p>
+    </div>
+    <div class="panel">
+      <h2>Carburante</h2>
+      <p class="status" id="fuel">100%</p>
+    </div>
+  </div>
+
+  <button id="startBtn">Avvia Missione</button>
+
+  <div id="sceneContainer"></div>
+
+  <footer>
+    © 2025 Alessio | Missione Alpha Simulation
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.min.js"></script>
+  <script>
+    const status = document.getElementById("status");
+    const position = document.getElementById("position");
+    const fuel = document.getElementById("fuel");
+    const button = document.getElementById("startBtn");
+
+    button.addEventListener("click", () => {
+      status.textContent = "In volo verso l'orbita terrestre...";
+      position.textContent = "In orbita bassa";
+      let fuelLevel = 100;
+      const interval = setInterval(() => {
+        fuelLevel -= 10;
+        fuel.textContent = fuelLevel + "%";
+
+        if (fuelLevel <= 50) {
+          position.textContent = "Verso la Luna";
+          status.textContent = "In navigazione intermedia";
+        }
+
+        if (fuelLevel <= 20) {
+          position.textContent = "Entrata in orbita lunare";
+          status.textContent = "Preparazione all'atterraggio";
+        }
+
+        if (fuelLevel <= 0) {
+          clearInterval(interval);
+          fuel.textContent = "0%";
+          position.textContent = "Superficie lunare";
+          status.textContent = "Missione completata";
+        }
+      }, 1000);
+
+      animateSonda();
+    });
+
+    // Three.js Setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, 400);
+    document.getElementById("sceneContainer").appendChild(renderer.domElement);
+
+    const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const earthMaterial = new THREE.MeshBasicMaterial({ color: 0x2e86de });
+    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    earth.position.x = -3;
+    scene.add(earth);
+
+    const moonGeometry = new THREE.SphereGeometry(0.6, 32, 32);
+    const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xbdc3c7 });
+    const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    moon.position.x = 3;
+    scene.add(moon);
+
+    const sondaGeometry = new THREE.ConeGeometry(0.2, 0.6, 16);
+    const sondaMaterial = new THREE.MeshBasicMaterial({ color: 0xf1c40f });
+    const sonda = new THREE.Mesh(sondaGeometry, sondaMaterial);
+    sonda.rotation.x = Math.PI / 2;
+    sonda.position.x = -3;
+    scene.add(sonda);
+
+    camera.position.z = 5;
+    camera.position.y = 2;
+
+    let sondaLaunched = false;
+
+    function animateSonda() {
+      sondaLaunched = true;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (sondaLaunched && sonda.position.x < 3) {
+        sonda.position.x += 0.05;  // Increase speed to simulate launch
+        camera.position.x = sonda.position.x; // Camera follows the sonda
+        camera.position.z = 5 - (sonda.position.x / 3); // Camera zooms out as sonda moves
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
