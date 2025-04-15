@@ -51,20 +51,20 @@
       color: #ffd166;
     }
 
-    #startBtn {
+    #startBtn, #orbitBtn {
       background-color: #00b4d8;
       color: #fff;
       padding: 1rem 2rem;
       border: none;
       border-radius: 25px;
       font-size: 1rem;
-      margin: 2rem auto;
+      margin: 1rem auto;
       display: block;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    #startBtn:hover {
+    #startBtn:hover, #orbitBtn:hover {
       background-color: #0077b6;
     }
 
@@ -104,6 +104,7 @@
   </div>
 
   <button id="startBtn">Avvia Missione</button>
+  <button id="orbitBtn">Missione Orbitale</button>
 
   <div id="sceneContainer"></div>
 
@@ -116,59 +117,38 @@
     const status = document.getElementById("status");
     const position = document.getElementById("position");
     const fuel = document.getElementById("fuel");
-    const button = document.getElementById("startBtn");
+    const startBtn = document.getElementById("startBtn");
+    const orbitBtn = document.getElementById("orbitBtn");
 
-    button.addEventListener("click", () => {
-      status.textContent = "In volo verso l'orbita terrestre...";
-      position.textContent = "In orbita bassa";
-      let fuelLevel = 100;
-      const interval = setInterval(() => {
-        fuelLevel -= 10;
-        fuel.textContent = fuelLevel + "%";
-
-        if (fuelLevel <= 50) {
-          position.textContent = "Verso la Luna";
-          status.textContent = "In navigazione intermedia";
-        }
-
-        if (fuelLevel <= 20) {
-          position.textContent = "Entrata in orbita lunare";
-          status.textContent = "Preparazione all'atterraggio";
-        }
-
-        if (fuelLevel <= 0) {
-          clearInterval(interval);
-          fuel.textContent = "0%";
-          position.textContent = "Superficie lunare";
-          status.textContent = "Missione completata";
-        }
-      }, 1000);
-
-      animateSonda();
-    });
-
-    // Three.js Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, 400);
     document.getElementById("sceneContainer").appendChild(renderer.domElement);
 
-    const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const earthMaterial = new THREE.MeshBasicMaterial({ color: 0x2e86de });
-    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+    const textureLoader = new THREE.TextureLoader();
+
+    const earthTexture = textureLoader.load('https://threejs.org/examples/textures/earth_atmos_2048.jpg');
+    const moonTexture = textureLoader.load('https://threejs.org/examples/textures/moon_1024.jpg');
+
+    const earth = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 32),
+      new THREE.MeshBasicMaterial({ map: earthTexture })
+    );
     earth.position.x = -3;
     scene.add(earth);
 
-    const moonGeometry = new THREE.SphereGeometry(0.6, 32, 32);
-    const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xbdc3c7 });
-    const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    const moon = new THREE.Mesh(
+      new THREE.SphereGeometry(0.6, 32, 32),
+      new THREE.MeshBasicMaterial({ map: moonTexture })
+    );
     moon.position.x = 3;
     scene.add(moon);
 
-    const sondaGeometry = new THREE.ConeGeometry(0.2, 0.6, 16);
-    const sondaMaterial = new THREE.MeshBasicMaterial({ color: 0xf1c40f });
-    const sonda = new THREE.Mesh(sondaGeometry, sondaMaterial);
+    const sonda = new THREE.Mesh(
+      new THREE.ConeGeometry(0.2, 0.6, 16),
+      new THREE.MeshBasicMaterial({ color: 0xf1c40f })
+    );
     sonda.rotation.x = Math.PI / 2;
     sonda.position.x = -3;
     scene.add(sonda);
@@ -176,22 +156,99 @@
     camera.position.z = 5;
     camera.position.y = 2;
 
-    let sondaLaunched = false;
+    let direction = "forward"; // forward = Terra->Luna, backward = Luna->Terra
+    let inFlight = false;
 
-    function animateSonda() {
-      sondaLaunched = true;
+    function launchMission() {
+      if (inFlight) return;
+      inFlight = true;
+      let fuelLevel = 100;
+      let targetX = direction === "forward" ? 3 : -3;
+      let interval = setInterval(() => {
+        fuelLevel -= 10;
+        fuel.textContent = fuelLevel + "%";
+
+        if (direction === "forward") {
+          if (fuelLevel <= 50) {
+            position.textContent = "Verso la Luna";
+            status.textContent = "In navigazione intermedia";
+          }
+          if (fuelLevel <= 20) {
+            position.textContent = "Entrata in orbita lunare";
+            status.textContent = "Preparazione all'atterraggio";
+          }
+        } else {
+          if (fuelLevel <= 50) {
+            position.textContent = "Verso la Terra";
+            status.textContent = "Rientro in corso";
+          }
+        }
+
+        if (fuelLevel <= 0) {
+          clearInterval(interval);
+          fuel.textContent = "100%";
+          direction = direction === "forward" ? "backward" : "forward";
+          position.textContent = direction === "forward" ? "Terra" : "Superficie lunare";
+          status.textContent = "Missione completata";
+          inFlight = false;
+        }
+      }, 1000);
+
+      animateSonda(targetX);
+    }
+
+    function launchOrbitalMission() {
+      if (inFlight) return;
+      inFlight = true;
+      let angle = 0;
+      let radius = 1.5;
+      let centerX = 3;
+      let centerY = 0;
+
+      position.textContent = "Orbita lunare";
+      status.textContent = "In orbita...";
+      fuel.textContent = "60%";
+
+      sonda.position.set(centerX + radius * Math.cos(angle), 0.5, radius * Math.sin(angle));
+
+      let orbitInterval = setInterval(() => {
+        angle += 0.1;
+        sonda.position.x = centerX + radius * Math.cos(angle);
+        sonda.position.z = radius * Math.sin(angle);
+
+        if (angle >= 2 * Math.PI) {
+          clearInterval(orbitInterval);
+          status.textContent = "Rientro completato";
+          position.textContent = "Terra";
+          fuel.textContent = "100%";
+          sonda.position.x = -3;
+          sonda.position.z = 0;
+          inFlight = false;
+        }
+      }, 100);
+    }
+
+    function animateSonda(targetX) {
+      function move() {
+        if ((direction === "forward" && sonda.position.x < targetX) ||
+            (direction === "backward" && sonda.position.x > targetX)) {
+          sonda.position.x += direction === "forward" ? 0.05 : -0.05;
+          camera.position.x = sonda.position.x;
+          camera.position.z = 5 - (Math.abs(sonda.position.x) / 3);
+          requestAnimationFrame(move);
+        }
+      }
+      move();
     }
 
     function animate() {
       requestAnimationFrame(animate);
-      if (sondaLaunched && sonda.position.x < 3) {
-        sonda.position.x += 0.05;  // Increase speed to simulate launch
-        camera.position.x = sonda.position.x; // Camera follows the sonda
-        camera.position.z = 5 - (sonda.position.x / 3); // Camera zooms out as sonda moves
-      }
       renderer.render(scene, camera);
     }
     animate();
+
+    startBtn.addEventListener("click", launchMission);
+    orbitBtn.addEventListener("click", launchOrbitalMission);
   </script>
 </body>
 </html>
