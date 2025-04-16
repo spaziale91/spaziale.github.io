@@ -1,77 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Missione Alpha</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <title>Missione Alpha - Simulazione Avanzata</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #00b4d8;
+      --secondary-color: #90e0ef;
+      --accent-color: #ffd166;
+      --dark-bg: #0d1b2a;
+      --panel-bg: #112240;
+      --header-bg: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+    }
+    
     body {
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at center, #0d1b2a, #1b263b);
+      font-family: 'Space Mono', monospace;
+      background: radial-gradient(circle at center, var(--dark-bg), #1b263b);
       color: #fff;
       overflow-x: hidden;
     }
 
     header {
-      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
-      padding: 2rem;
+      background: var(--header-bg);
+      padding: 1.5rem;
       text-align: center;
-      color: #aee6f9;
+      color: var(--secondary-color);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 10;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
     }
 
     h1 {
-      margin: 0;
       font-size: 2.5rem;
+      text-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+      margin-bottom: 0.5rem;
     }
 
     .dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      padding: 2rem;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .panel {
-      background: #112240;
+      background: var(--panel-bg);
       border-radius: 10px;
       padding: 1rem;
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
       text-align: center;
+      border: 1px solid rgba(144, 224, 239, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .panel:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     }
 
     .panel h2 {
-      color: #90e0ef;
+      color: var(--secondary-color);
       margin-bottom: 1rem;
+      font-size: 1.2rem;
     }
 
     .status {
       font-size: 1.2rem;
-      color: #ffd166;
+      color: var(--accent-color);
+      font-weight: bold;
     }
 
-    #startBtn, #orbitBtn {
-      background-color: #00b4d8;
+    .control-panel {
+      background: var(--panel-bg);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1rem auto;
+      max-width: 500px;
+      text-align: center;
+      border: 1px solid rgba(144, 224, 239, 0.2);
+    }
+
+    .btn {
+      background-color: var(--primary-color);
       color: #fff;
-      padding: 1rem 2rem;
+      padding: 0.75rem 1.5rem;
       border: none;
       border-radius: 25px;
       font-size: 1rem;
-      margin: 1rem auto;
-      display: block;
+      margin: 0.5rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
 
-    #startBtn:hover, #orbitBtn:hover {
+    .btn:hover {
       background-color: #0077b6;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+    }
+
+    .btn:disabled {
+      background-color: #546e7a;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    #orbital-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    #orbits {
+      width: 60px;
+      margin: 0 10px;
+      padding: 5px;
+      background: #112240;
+      border: 1px solid var(--secondary-color);
+      color: white;
+      border-radius: 5px;
+      text-align: center;
+      font-family: 'Space Mono', monospace;
     }
 
     #sceneContainer {
       width: 100%;
-      height: 400px;
+      height: 500px;
       display: block;
+      position: relative;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .mission-log {
+      max-height: 150px;
+      overflow-y: auto;
+      background: rgba(17, 34, 64, 0.7);
+      border-radius: 10px;
+      padding: 1rem;
+      border: 1px solid rgba(144, 224, 239, 0.2);
+      margin: 1rem auto;
+      max-width: 800px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+    }
+
+    .log-entry {
+      margin-bottom: 0.5rem;
+      border-left: 3px solid var(--primary-color);
+      padding-left: 10px;
+    }
+
+    .log-time {
+      color: var(--secondary-color);
+      margin-right: 10px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem auto;
+      max-width: 800px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--secondary-color);
     }
 
     footer {
@@ -79,13 +198,46 @@
       padding: 2rem;
       font-size: 0.9rem;
       color: #aaa;
+      margin-top: 2rem;
+      background: rgba(11, 22, 42, 0.5);
+    }
+
+    /* Progress bar styles */
+    .progress-bar {
+      height: 10px;
+      background-color: #193b5c;
+      border-radius: 5px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background-color: var(--primary-color);
+      width: 100%;
+      transition: width 0.5s ease-in-out;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      #sceneContainer {
+        height: 350px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Missione Alpha - Centro di Controllo</h1>
-    <p>Simulazione di monitoraggio per una missione spaziale immaginaria.</p>
+    <p>Simulazione avanzata di missione lunare</p>
   </header>
 
   <div class="dashboard">
@@ -100,155 +252,516 @@
     <div class="panel">
       <h2>Carburante</h2>
       <p class="status" id="fuel">100%</p>
+      <div class="progress-bar">
+        <div class="progress" id="fuel-bar"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Dati Telemetrici</h2>
+      <p class="status" id="telemetry">In attesa</p>
+    </div>
+  </div>
+  
+  <div class="control-panel">
+    <h3>Controllo Missione</h3>
+    <button id="startBtn" class="btn">Inizia Missione Lunare</button>
+    <div id="orbital-controls">
+      <button id="orbitBtn" class="btn">Missione Orbitale</button>
+      <label for="orbits">Orbite:</label>
+      <input type="number" id="orbits" min="1" max="10" value="3">
+    </div>
+    <button id="abortBtn" class="btn" disabled>Interrompi Missione</button>
+  </div>
+
+  <div id="sceneContainer"></div>
+  
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-value" id="distance">0</div>
+      <div class="stat-label">Distanza (km)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="velocity">0</div>
+      <div class="stat-label">Velocità (km/h)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="time">00:00</div>
+      <div class="stat-label">Tempo Missione</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="orbits-completed">0</div>
+      <div class="stat-label">Orbite Completate</div>
     </div>
   </div>
 
-  <button id="startBtn">Avvia Missione</button>
-  <button id="orbitBtn">Missione Orbitale</button>
-
-  <div id="sceneContainer"></div>
+  <div class="mission-log">
+    <div class="log-entry">
+      <span class="log-time">00:00:00</span>
+      <span>Sistema pronto per il lancio</span>
+    </div>
+  </div>
 
   <footer>
-    © 2025 Alessio | Missione Alpha Simulation
+    <p>© 2025 Missione Alpha Simulation | Creato da Alessio</p>
+    <p>Simulazione spaziale a scopo educativo</p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
+    // Elementi DOM
     const status = document.getElementById("status");
     const position = document.getElementById("position");
     const fuel = document.getElementById("fuel");
+    const fuelBar = document.getElementById("fuel-bar");
+    const telemetry = document.getElementById("telemetry");
     const startBtn = document.getElementById("startBtn");
     const orbitBtn = document.getElementById("orbitBtn");
+    const abortBtn = document.getElementById("abortBtn");
+    const orbitsInput = document.getElementById("orbits");
+    const distanceEl = document.getElementById("distance");
+    const velocityEl = document.getElementById("velocity");
+    const timeEl = document.getElementById("time");
+    const orbitsCompletedEl = document.getElementById("orbits-completed");
+    const missionLog = document.querySelector(".mission-log");
 
+    // Variabili di stato
+    let missionActive = false;
+    let missionType = null; // 'lunar' o 'orbital'
+    let direction = "outbound"; // outbound = Terra->Luna, inbound = Luna->Terra
+    let currentPosition = "earth";
+    let fuelLevel = 100;
+    let missionTime = 0;
+    let missionInterval;
+    let velocity = 0;
+    let distance = 0;
+    let orbitsCompleted = 0;
+    let targetOrbits = 3;
+    let orbitAngle = 0;
+    let orbitRadius = 2;
+    let cameraFollowingSonda = true;
+    let missionStartTime;
+
+    // Configurazione Three.js
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, 400);
-    document.getElementById("sceneContainer").appendChild(renderer.domElement);
+    scene.background = new THREE.Color(0x000510);
+    
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 500, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, 500);
+    
+    const sceneContainer = document.getElementById("sceneContainer");
+    sceneContainer.innerHTML = '';
+    sceneContainer.appendChild(renderer.domElement);
 
-    const textureLoader = new THREE.TextureLoader();
+    // Dimensioni degli oggetti celesti
+    const EARTH_RADIUS = 1.5;
+    const MOON_RADIUS = 0.4;
+    const EARTH_POS = -8;
+    const MOON_POS = 8;
 
-    const earthTexture = textureLoader.load('https://threejs.org/examples/textures/earth_atmos_2048.jpg');
-    const moonTexture = textureLoader.load('https://threejs.org/examples/textures/moon_1024.jpg');
-
-    const earth = new THREE.Mesh(
-      new THREE.SphereGeometry(1, 32, 32),
-      new THREE.MeshBasicMaterial({ map: earthTexture })
-    );
-    earth.position.x = -3;
-    scene.add(earth);
-
-    const moon = new THREE.Mesh(
-      new THREE.SphereGeometry(0.6, 32, 32),
-      new THREE.MeshBasicMaterial({ map: moonTexture })
-    );
-    moon.position.x = 3;
-    scene.add(moon);
-
-    const sonda = new THREE.Mesh(
-      new THREE.ConeGeometry(0.2, 0.6, 16),
-      new THREE.MeshBasicMaterial({ color: 0xf1c40f })
-    );
-    sonda.rotation.x = Math.PI / 2;
-    sonda.position.x = -3;
-    scene.add(sonda);
-
-    camera.position.z = 5;
-    camera.position.y = 2;
-
-    let direction = "forward"; // forward = Terra->Luna, backward = Luna->Terra
-    let inFlight = false;
-
-    function launchMission() {
-      if (inFlight) return;
-      inFlight = true;
-      let fuelLevel = 100;
-      let targetX = direction === "forward" ? 3 : -3;
-      let interval = setInterval(() => {
-        fuelLevel -= 10;
-        fuel.textContent = fuelLevel + "%";
-
-        if (direction === "forward") {
-          if (fuelLevel <= 50) {
-            position.textContent = "Verso la Luna";
-            status.textContent = "In navigazione intermedia";
-          }
-          if (fuelLevel <= 20) {
-            position.textContent = "Entrata in orbita lunare";
-            status.textContent = "Preparazione all'atterraggio";
-          }
-        } else {
-          if (fuelLevel <= 50) {
-            position.textContent = "Verso la Terra";
-            status.textContent = "Rientro in corso";
-          }
-        }
-
-        if (fuelLevel <= 0) {
-          clearInterval(interval);
-          fuel.textContent = "100%";
-          direction = direction === "forward" ? "backward" : "forward";
-          position.textContent = direction === "forward" ? "Terra" : "Superficie lunare";
-          status.textContent = "Missione completata";
-          inFlight = false;
-        }
-      }, 1000);
-
-      animateSonda(targetX);
-    }
-
-    function launchOrbitalMission() {
-      if (inFlight) return;
-      inFlight = true;
-      let angle = 0;
-      let radius = 1.5;
-      let centerX = 3;
-      let centerY = 0;
-
-      position.textContent = "Orbita lunare";
-      status.textContent = "In orbita...";
-      fuel.textContent = "60%";
-
-      sonda.position.set(centerX + radius * Math.cos(angle), 0.5, radius * Math.sin(angle));
-
-      let orbitInterval = setInterval(() => {
-        angle += 0.1;
-        sonda.position.x = centerX + radius * Math.cos(angle);
-        sonda.position.z = radius * Math.sin(angle);
-
-        if (angle >= 2 * Math.PI) {
-          clearInterval(orbitInterval);
-          status.textContent = "Rientro completato";
-          position.textContent = "Terra";
-          fuel.textContent = "100%";
-          sonda.position.x = -3;
-          sonda.position.z = 0;
-          inFlight = false;
-        }
-      }, 100);
-    }
-
-    function animateSonda(targetX) {
-      function move() {
-        if ((direction === "forward" && sonda.position.x < targetX) ||
-            (direction === "backward" && sonda.position.x > targetX)) {
-          sonda.position.x += direction === "forward" ? 0.05 : -0.05;
-          camera.position.x = sonda.position.x;
-          camera.position.z = 5 - (Math.abs(sonda.position.x) / 3);
-          requestAnimationFrame(move);
-        }
+    // Creazione delle stelle di sfondo
+    function createStars() {
+      const starsGeometry = new THREE.BufferGeometry();
+      const starsMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.1,
+      });
+      
+      const starsCount = 5000;
+      const starsPositions = new Float32Array(starsCount * 3);
+      
+      for (let i = 0; i < starsCount * 3; i += 3) {
+        starsPositions[i] = (Math.random() - 0.5) * 100;
+        starsPositions[i + 1] = (Math.random() - 0.5) * 100;
+        starsPositions[i + 2] = (Math.random() - 0.5) * 100;
       }
-      move();
+      
+      starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+      const stars = new THREE.Points(starsGeometry, starsMaterial);
+      scene.add(stars);
     }
 
+    // Creazione della Via Lattea come sfondo
+    function createMilkyWay() {
+      const textureLoader = new THREE.TextureLoader();
+      const galaxyGeometry = new THREE.SphereGeometry(50, 32, 32);
+      const galaxyMaterial = new THREE.MeshBasicMaterial({
+        map: textureLoader.load('https://threejs.org/examples/textures/milkyway.jpg'),
+        side: THREE.BackSide
+      });
+      const galaxy = new THREE.Mesh(galaxyGeometry, galaxyMaterial);
+      scene.add(galaxy);
+    }
+
+    // Caricamento delle texture
+    const textureLoader = new THREE.TextureLoader();
+    
+    // Creazione della Terra
+    function createEarth() {
+      const earthGeometry = new THREE.SphereGeometry(EARTH_RADIUS, 32, 32);
+      const earthTexture = textureLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+      const bumpMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+      const specularMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+      
+      const earthMaterial = new THREE.MeshPhongMaterial({
+        map: earthTexture,
+        bumpMap: bumpMap,
+        bumpScale: 0.05,
+        specularMap: specularMap,
+        specular: new THREE.Color(0x222222)
+      });
+      
+      const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+      earth.position.x = EARTH_POS;
+      earth.rotation.y = Math.PI;
+      
+      // Aggiunta delle nuvole
+      const cloudsGeometry = new THREE.SphereGeometry(EARTH_RADIUS + 0.03, 32, 32);
+      const cloudsTexture = textureLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
+      const cloudsMaterial = new THREE.MeshPhongMaterial({
+        map: cloudsTexture,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const clouds = new THREE.Mesh(cloudsGeometry, cloudsMaterial);
+      earth.add(clouds);
+      
+      scene.add(earth);
+      return earth;
+    }
+
+    // Creazione della Luna
+    function createMoon() {
+      const moonGeometry = new THREE.SphereGeometry(MOON_RADIUS, 32, 32);
+      const moonTexture = textureLoader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
+      const moonBumpMap = textureLoader.load('https://threejs.org/examples/textures/planets/moon_bump_1024.jpg');
+      
+      const moonMaterial = new THREE.MeshPhongMaterial({
+        map: moonTexture,
+        bumpMap: moonBumpMap,
+        bumpScale: 0.02,
+      });
+      
+      const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+      moon.position.x = MOON_POS;
+      
+      scene.add(moon);
+      return moon;
+    }
+
+    // Creazione della sonda spaziale
+    function createSpacecraft() {
+      const group = new THREE.Group();
+      
+      // Corpo principale
+      const bodyGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.5, 16);
+      const bodyMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0xC0C0C0,
+        shininess: 100
+      });
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      group.add(body);
+      
+      // Pannelli solari
+      const panelGeometry = new THREE.BoxGeometry(1, 0.01, 0.3);
+      const panelTexture = textureLoader.load('https://threejs.org/examples/textures/crate.gif');
+      const panelMaterial = new THREE.MeshPhongMaterial({ 
+        map: panelTexture,
+        color: 0x3388ff 
+      });
+      
+      const leftPanel = new THREE.Mesh(panelGeometry, panelMaterial);
+      leftPanel.position.y = 0;
+      leftPanel.position.z = 0.3;
+      group.add(leftPanel);
+      
+      const rightPanel = new THREE.Mesh(panelGeometry, panelMaterial);
+      rightPanel.position.y = 0;
+      rightPanel.position.z = -0.3;
+      group.add(rightPanel);
+      
+      // Antenna
+      const antennaGeometry = new THREE.CylinderGeometry(0.01, 0.01, 0.3, 8);
+      const antennaMaterial = new THREE.MeshPhongMaterial({ color: 0x111111 });
+      const antenna = new THREE.Mesh(antennaGeometry, antennaMaterial);
+      antenna.position.y = 0.4;
+      group.add(antenna);
+      
+      const dishGeometry = new THREE.CircleGeometry(0.1, 16);
+      const dishMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0xFFFFFF,
+        side: THREE.DoubleSide
+      });
+      const dish = new THREE.Mesh(dishGeometry, dishMaterial);
+      dish.position.y = 0.5;
+      dish.rotation.x = Math.PI / 2;
+      group.add(dish);
+      
+      // Posizionamento della sonda
+      group.position.x = EARTH_POS + EARTH_RADIUS + 0.5;
+      group.rotation.z = Math.PI / 2;
+      
+      scene.add(group);
+      return group;
+    }
+
+    // Aggiunta delle luci
+    function setupLights() {
+      // Luce solare principale
+      const sunLight = new THREE.DirectionalLight(0xFFFFFF, 1.2);
+      sunLight.position.set(-20, 10, 10);
+      scene.add(sunLight);
+      
+      // Luce ambiente
+      const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+      scene.add(ambientLight);
+      
+      // Luce puntuale per la Terra
+      const earthLight = new THREE.PointLight(0x3388ff, 0.5, 10);
+      earthLight.position.set(EARTH_POS, 0, 0);
+      scene.add(earthLight);
+    }
+
+    // Aggiornamento della posizione della camera
+    function updateCamera() {
+      // Segue la sonda con un po' di distanza
+      if (cameraFollowingSonda) {
+        const offset = new THREE.Vector3(-1.5, 1, 4);
+        camera.position.x = spacecraft.position.x + offset.x;
+        camera.position.y = spacecraft.position.y + offset.y;
+        camera.position.z = offset.z;
+        camera.lookAt(spacecraft.position);
+      }
+    }
+
+    // Inizializzazione della scena
+    let earth, moon, spacecraft;
+    
+    function initScene() {
+      createStars();
+      createMilkyWay();
+      earth = createEarth();
+      moon = createMoon();
+      spacecraft = createSpacecraft();
+      setupLights();
+      
+      camera.position.set(-10, 2, 5);
+      camera.lookAt(spacecraft.position);
+    }
+
+    // Funzione per aggiungere un log alla missione
+    function addLog(message) {
+      const now = new Date();
+      const timeString = now.toTimeString().substring(0, 8);
+      
+      const logEntry = document.createElement('div');
+      logEntry.className = 'log-entry';
+      
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'log-time';
+      timeSpan.textContent = timeString;
+      
+      const messageSpan = document.createElement('span');
+      messageSpan.textContent = message;
+      
+      logEntry.appendChild(timeSpan);
+      logEntry.appendChild(messageSpan);
+      
+      missionLog.appendChild(logEntry);
+      missionLog.scrollTop = missionLog.scrollHeight;
+    }
+
+    // Funzione per aggiornare i dati telemetrici
+    function updateTelemetry() {
+      // Aggiornamento della distanza
+      const earthDistance = Math.abs(spacecraft.position.x - EARTH_POS);
+      const moonDistance = Math.abs(spacecraft.position.x - MOON_POS);
+      
+      if (direction === "outbound") {
+        distance = Math.floor(earthDistance * 100000);
+        distanceEl.textContent = (distance).toLocaleString();
+      } else {
+        distance = Math.floor(moonDistance * 100000);
+        distanceEl.textContent = (distance).toLocaleString();
+      }
+      
+      // Velocità simulata basata sulla posizione
+      if (missionType === "lunar") {
+        const maxSpeed = 40000;
+        const midPoint = (MOON_POS + EARTH_POS) / 2;
+        const relativePosition = Math.abs(spacecraft.position.x - midPoint) / Math.abs(MOON_POS - EARTH_POS) * 2;
+        velocity = Math.floor(maxSpeed * (1 - relativePosition * 0.7));
+      } else if (missionType === "orbital") {
+        velocity = 20000 + Math.random() * 2000;
+      }
+      
+      velocityEl.textContent = Math.floor(velocity).toLocaleString();
+      
+      // Telemetria
+      const alt = Math.floor((currentPosition === "earth" ? earthDistance : moonDistance) * 100);
+      telemetry.textContent = `Alt: ${alt} km | V: ${Math.floor(velocity)} km/h`;
+    }
+
+    // Funzione di animazione principale
     function animate() {
       requestAnimationFrame(animate);
+      
+      // Rotazione continua della Terra e della Luna
+      earth.rotation.y += 0.003;
+      moon.rotation.y += 0.001;
+      
+      // Aggiornamento dell'UI durante una missione
+      if (missionActive) {
+        // Aggiornamento del tempo di missione
+        const elapsedSeconds = Math.floor((Date.now() - missionStartTime) / 1000);
+        const minutes = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+        const seconds = (elapsedSeconds % 60).toString().padStart(2, '0');
+        timeEl.textContent = `${minutes}:${seconds}`;
+        
+        updateTelemetry();
+      }
+      
+      updateCamera();
       renderer.render(scene, camera);
     }
-    animate();
 
-    startBtn.addEventListener("click", launchMission);
-    orbitBtn.addEventListener("click", launchOrbitalMission);
-  </script>
-</body>
-</html>
+    // Funzione per avviare una missione lunare
+    function startLunarMission() {
+      if (missionActive) return;
+      
+      missionActive = true;
+      missionType = "lunar";
+      missionStartTime = Date.now();
+      
+      startBtn.disabled = true;
+      orbitBtn.disabled = true;
+      abortBtn.disabled = false;
+      
+      // Riporta la sonda alla posizione iniziale se necessario
+      if (currentPosition !== "earth") {
+        spacecraft.position.x = EARTH_POS + EARTH_RADIUS + 0.5;
+        currentPosition = "earth";
+        direction = "outbound";
+      }
+      
+      status.textContent = "Lancio in corso";
+      position.textContent = "In partenza dalla Terra";
+      addLog("Lancio della missione lunare effettuato");
+      
+      // Intervallo per aggiornare il carburante e altri parametri
+      missionInterval = setInterval(() => {
+        // Aggiornamento del carburante
+        if (direction === "outbound") {
+          fuelLevel -= 0.2;
+        } else {
+          fuelLevel -= 0.15;
+        }
+        
+        if (fuelLevel < 0) fuelLevel = 0;
+        
+        fuel.textContent = Math.floor(fuelLevel) + "%";
+        fuelBar.style.width = fuelLevel + "%";
+        
+        // Movimento della sonda
+        if (direction === "outbound") {
+          // Avanzamento verso la Luna
+          spacecraft.position.x += 0.03;
+          
+          // Aggiornamento dello stato in base alla posizione
+          const progress = (spacecraft.position.x - EARTH_POS) / (MOON_POS - EARTH_POS);
+          
+          if (progress > 0.25 && progress < 0.3) {
+            status.textContent = "Viaggio verso la Luna";
+            addLog("La sonda ha superato l'orbita terrestre");
+          } else if (progress > 0.7 && progress < 0.75) {
+            status.textContent = "Avvicinamento alla Luna";
+            addLog("La sonda sta entrando nell'attrazione gravitazionale lunare");
+          }
+          
+          // Arrivo sulla Luna
+          if (spacecraft.position.x >= MOON_POS - MOON_RADIUS - 0.3) {
+            spacecraft.position.x = MOON_POS - MOON_RADIUS - 0.3;
+            direction = "inbound";
+            currentPosition = "moon";
+            
+            status.textContent = "Atterraggio completato";
+            position.textContent = "Superficie lunare";
+            addLog("Atterraggio sulla Luna completato con successo");
+            
+            // Pausa prima del ritorno
+            clearInterval(missionInterval);
+            setTimeout(() => {
+              if (!missionActive) return;
+              
+              status.textContent = "Preparazione al ritorno";
+              addLog("Preparazione per il viaggio di ritorno sulla Terra");
+              
+              missionInterval = setInterval(() => {
+                // Aggiornamento del carburante per il ritorno
+                fuelLevel -= 0.15;
+                if (fuelLevel < 0) fuelLevel = 0;
+                
+                fuel.textContent = Math.floor(fuelLevel) + "%";
+                fuelBar.style.width = fuelLevel + "%";
+                
+                // Movimento di ritorno verso la Terra
+                spacecraft.position.x -= 0.04;
+                
+                // Aggiornamento dello stato in base alla posizione
+                const returnProgress = (MOON_POS - spacecraft.position.x) / (MOON_POS - EARTH_POS);
+                
+                if (returnProgress > 0.25 && returnProgress < 0.3) {
+                  status.textContent = "Viaggio verso la Terra";
+                  position.textContent = "Rientro verso la Terra";
+                  addLog("La sonda ha lasciato l'orbita lunare");
+                } else if (returnProgress > 0.7 && returnProgress < 0.75) {
+                  status.textContent = "Fase di rientro";
+                  addLog("Inizio procedura di rientro nell'atmosfera terrestre");
+                }
+                
+                // Arrivo sulla Terra
+                if (spacecraft.position.x <= EARTH_POS + EARTH_RADIUS + 0.5) {
+                  spacecraft.position.x = EARTH_POS + EARTH_RADIUS + 0.5;
+                  completeMission();
+                }
+              }, 50);
+            }, 3000);
+          }
+        }
+      }, 50);
+    }
+
+    // Funzione per avviare una missione orbitale
+    function startOrbitalMission() {
+      if (missionActive || currentPosition !== "earth") return;
+      
+      targetOrbits = parseInt(orbitsInput.value) || 3;
+      if (targetOrbits < 1) targetOrbits = 1;
+      if (targetOrbits > 10) targetOrbits = 10;
+      orbitsInput.value = targetOrbits;
+      
+      missionActive = true;
+      missionType = "orbital";
+      missionStartTime = Date.now();
+      orbitsCompleted = 0;
+      orbitAngle = 0;
+      
+      startBtn.disabled = true;
+      orbitBtn.disabled = true;
+      abortBtn.disabled = false;
+      
+      status.textContent = "Lancio verso la Luna";
+      position.textContent = "In viaggio";
+      addLog(`Lancio della missione orbitale - Obiettivo: ${targetOrbits} orbite`);
+      
+      // Fase 1: Viaggio verso la Luna
+      let phase = "outbound";
+      let outboundProgress = 0;
+      
+      missionInterval = setInterval(() => {
+        // Consumo di carburante
+        if (phase === "outbound" || phase === "return") {
+          fuelLevel -= 0.2;
+        } else if (phase === "orbiting") {
+          fuelLevel -= 0.05
